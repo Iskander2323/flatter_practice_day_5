@@ -12,10 +12,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Number Sample'),
     );
   }
 }
@@ -70,11 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 vertical: 60,
-                horizontal: 8,
+                horizontal: 10,
               ),
               child: Container(
+                margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 252, 251, 250),
                   border: Border(bottom: BorderSide(color: Colors.blueAccent)),
@@ -82,7 +83,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 alignment: Alignment.topCenter,
                 height: 30,
                 width: 400,
-                child: Text(_number),
+                child: Text(
+                  _number,
+                  style: TextStyle(fontSize: 25),
+                ),
               ),
             ),
             Center(
@@ -100,62 +104,73 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Container(
+            SizedBox(
+              height: 50,
+              width: 300,
               child: TextButton(
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 10, 115, 201)),
                 ),
                 onPressed: () {
                   _numberSample('+7');
                 },
-                child: Text('THEBUTTON'),
+                child: Text(
+                  'To Sample',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: IconButton(
-                      icon: Flag.fromCode(
-                        FlagsCode.KZ,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 45,
+                horizontal: 10,
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: IconButton(
+                        icon: Flag.fromCode(
+                          FlagsCode.KZ,
+                        ),
+                        iconSize: 5,
+                        onPressed: () {
+                          _numberSample('+7');
+                        },
                       ),
-                      iconSize: 5,
-                      onPressed: () {
-                        _numberSample('+7');
-                      },
                     ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: IconButton(
-                      icon: Flag.fromCode(
-                        FlagsCode.US,
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: IconButton(
+                        icon: Flag.fromCode(
+                          FlagsCode.US,
+                        ),
+                        iconSize: 5,
+                        onPressed: () {
+                          _numberSample('+1');
+                        },
                       ),
-                      iconSize: 5,
-                      onPressed: () {
-                        _numberSample('+1');
-                      },
                     ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: IconButton(
-                      icon: Flag.fromCode(
-                        FlagsCode.UA,
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: IconButton(
+                        icon: Flag.fromCode(
+                          FlagsCode.UA,
+                        ),
+                        iconSize: 5,
+                        onPressed: () {
+                          _numberSample('+380');
+                        },
                       ),
-                      iconSize: 5,
-                      onPressed: () {
-                        _numberSample('+380');
-                      },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
