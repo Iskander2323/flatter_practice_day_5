@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flag/flag.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,8 +31,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final myController = TextEditingController();
+  var _countryCode = ' ';
   var _number = ' ';
-  void _numberSample() {
+  void _numberSample(String countryCode) {
     setState(() {
       String pattern = r'^(?:[+0][1-9])?[0-9]{10,12}$';
       RegExp regExp = new RegExp(pattern);
@@ -44,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _number = 'Phone number is valid!';
       } else if (regExp.hasMatch(smth) && smth.length >= 10) {
         var num = smth.substring(smth.length - 10);
-        var response = '+7-(' +
+        var response = '${_countryCode}-(' +
             num.substring(0, 3) +
             ')-' +
             num.substring(3, 6) +
@@ -106,13 +108,62 @@ class _MyHomePageState extends State<MyHomePage> {
                       MaterialStateProperty.all<Color>(Colors.blue),
                 ),
                 onPressed: () {
-                  _numberSample();
+                  _numberSample('+7');
                 },
                 child: Text('THEBUTTON'),
               ),
             ),
-            Row(
-              children: [],
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: IconButton(
+                      icon: Flag.fromCode(
+                        FlagsCode.KZ,
+                      ),
+                      iconSize: 5,
+                      onPressed: () {
+                        setState(() {
+                          _countryCode = '+7';
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: IconButton(
+                      icon: Flag.fromCode(
+                        FlagsCode.US,
+                      ),
+                      iconSize: 5,
+                      onPressed: () {
+                        setState(() {
+                          _countryCode = '+1';
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: IconButton(
+                      icon: Flag.fromCode(
+                        FlagsCode.UA,
+                      ),
+                      iconSize: 5,
+                      onPressed: () {
+                        setState(() {
+                          _countryCode = '+380';
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ));
