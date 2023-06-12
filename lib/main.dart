@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final myController = TextEditingController();
-  var _countryCode = ' ';
+
   var _number = ' ';
   void _numberSample(String countryCode) {
     setState(() {
@@ -40,13 +40,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
       String smth =
           myController.text.trim().replaceAll(' ', '').replaceAll('-', '');
-      // Переписать механизм с учётом длины, а не первой цифры
 
       if (myController.text.isEmpty) {
         _number = 'Phone number is valid!';
       } else if (regExp.hasMatch(smth) && smth.length >= 10) {
         var num = smth.substring(smth.length - 10);
-        var response = '${_countryCode}-(' +
+        var response = '${countryCode}-(' +
             num.substring(0, 3) +
             ')-' +
             num.substring(3, 6) +
@@ -126,9 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       iconSize: 5,
                       onPressed: () {
-                        setState(() {
-                          _countryCode = '+7';
-                        });
+                        _numberSample('+7');
                       },
                     ),
                   ),
@@ -141,9 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       iconSize: 5,
                       onPressed: () {
-                        setState(() {
-                          _countryCode = '+1';
-                        });
+                        _numberSample('+1');
                       },
                     ),
                   ),
@@ -156,9 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       iconSize: 5,
                       onPressed: () {
-                        setState(() {
-                          _countryCode = '+380';
-                        });
+                        _numberSample('+380');
                       },
                     ),
                   ),
