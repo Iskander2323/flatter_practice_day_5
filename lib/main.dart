@@ -29,11 +29,33 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  final myController = TextEditingController();
+  var _number = ' ';
+  void _numberSample() {
     setState(() {
-      _counter++;
+      String pattern = r'^(?:[+0][1-9])?[0-9]{10,12}$';
+      RegExp regExp = new RegExp(pattern);
+
+      String smth =
+          myController.text.trim().replaceAll(' ', '').replaceAll('-', '');
+      // Переписать механизм с учётом длины, а не первой цифры
+
+      if (myController.text.isEmpty) {
+        _number = 'Phone number is valid!';
+      } else if (regExp.hasMatch(smth) && smth.length >= 10) {
+        var num = smth.substring(smth.length - 10);
+        var response = '+7-(' +
+            num.substring(0, 3) +
+            ')-' +
+            num.substring(3, 6) +
+            '-' +
+            num.substring(6, 8) +
+            '-' +
+            num.substring(8, 10);
+        _number = response;
+      } else {
+        _number = 'The number is not long enough or incorrect!';
+      }
     });
   }
 
@@ -45,25 +67,48 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 5,
-              ),
-              child: Text('SMTH'),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 16,
+                vertical: 60,
                 horizontal: 8,
               ),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Enter your number:',
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 252, 251, 250),
+                  border: Border(bottom: BorderSide(color: Colors.blueAccent)),
                 ),
+                alignment: Alignment.topCenter,
+                height: 30,
+                width: 400,
+                child: Text(_number),
+              ),
+            ),
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 80,
+                  horizontal: 8,
+                ),
+                child: TextFormField(
+                  controller: myController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter your number:',
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: TextButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+                onPressed: () {
+                  _numberSample();
+                },
+                child: Text('THEBUTTON'),
               ),
             ),
           ],
