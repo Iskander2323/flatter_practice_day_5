@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Number Sample'),
+      home: const MyHomePage(title: 'Sending Data'),
     );
   }
 }
@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final myController = TextEditingController();
 
-  void _unUsedFun() {}
+  void _sendData() {}
 
   var _number = ' ';
   void _numberSample(String countryCode) {
@@ -71,30 +71,25 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 60,
-                horizontal: 10,
-              ),
+            Center(
               child: Container(
-                margin: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 252, 251, 250),
-                  border: Border(bottom: BorderSide(color: Colors.blueAccent)),
+                padding: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 8,
                 ),
-                alignment: Alignment.topCenter,
-                height: 30,
-                width: 400,
-                child: Text(
-                  _number,
-                  style: TextStyle(fontSize: 25),
+                child: TextFormField(
+                  controller: myController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter your full name:',
+                  ),
                 ),
               ),
             ),
             Center(
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  vertical: 80,
+                  vertical: 8,
                   horizontal: 8,
                 ),
                 child: TextFormField(
@@ -102,6 +97,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Enter your number:',
+                  ),
+                ),
+              ),
+            ),
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 8,
+                ),
+                child: TextFormField(
+                  controller: myController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter your email:',
                   ),
                 ),
               ),
