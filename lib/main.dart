@@ -32,6 +32,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final myController = TextEditingController();
 
+  void _unUsedFun() {}
+
   var _number = ' ';
   void _numberSample(String countryCode) {
     setState(() {
