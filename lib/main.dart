@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_practice_day_5/feedback.dart';
 import 'package:http/http.dart' as http;
@@ -33,7 +31,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-Future<bool> createFeedback(String fullName, String phone, String email) async {
+Future<bool?> createFeedback(
+    String fullName, String phone, String email) async {
   final response =
       await http.post(Uri.parse('http://192.168.1.24:8000/feedback/'),
           headers: <String, String>{
@@ -44,11 +43,12 @@ Future<bool> createFeedback(String fullName, String phone, String email) async {
             'phone': phone,
             'email': email,
           }));
-
-  if (response.statusCode == 201) {
+  if (response.statusCode == 200) {
+    debugPrint('This worked');
     return true;
   } else {
-    throw Exception('Failed to create feedback');
+    debugPrint('That did not work');
+    return false;
   }
 }
 
@@ -57,28 +57,60 @@ class _MyHomePageState extends State<MyHomePage> {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
 
-  Future<void> _dialogStatus(BuildContext context){
+  late var _feedbackPost;
+
+  Future _waitingCircle() {
     return showDialog(
-      context: context, 
-      builder: (BuildContext context){
-        return AlertDialog(
-          title: Text('Title'),
-          content: Text('Content'),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context)
-              ),
-              onPressed: onPressed, 
-              child: Text('OK')),
-          ],
-        )
-       }
-      )
+        context: context,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  Future<void> _dialogStatusTrue(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Запрос прошел успешно'),
+            actions: <Widget>[
+              TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK')),
+            ],
+          );
+        });
+  }
+
+  Future<void> _dialogStatusFalse(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Запрос не прошел'),
+            actions: <Widget>[
+              TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK')),
+            ],
+          );
+        });
   }
 
   var _number = ' ';
-  void _numberSample(String countryCode) {
+  void _numberSample() {
     setState(() {
       String pattern = r'^(?:[+0][1-9])?[0-9]{10,12}$';
       RegExp regExp = new RegExp(pattern);
@@ -90,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _number = 'Phone number is valid!';
       } else if (regExp.hasMatch(smth) && smth.length >= 10) {
         var num = smth.substring(smth.length - 10);
-        var response = '${countryCode}-(' +
+        var response = '+7-(' +
             num.substring(0, 3) +
             ')-' +
             num.substring(3, 6) +
@@ -155,12 +187,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
                 onPressed: () async {
+                  _waitingCircle()
                   String fullName = nameController.text;
                   String phone = phoneController.text;
                   String email = emailController.text;
-                  var result = await FeedbackPost(
-                      fullName: fullName, phone: phone, email: email);
-                  if (result == true) {}
+                  _feedbackPost = await createFeedback(fullName, phone, email);
+                  if (_feedbackPost == true) {
+                    Navigator.of(context).pop();
+                    _dialogStatusTrue(context);
+                  } else {
+                    _dialogStatusFalse(context);
+                    Navigator.of(context).pop();
+
+                  }
                 },
                 child: Text('Send')),
           ]),
