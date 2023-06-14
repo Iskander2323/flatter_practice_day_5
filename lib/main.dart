@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:flag/flag.dart';
+import 'package:flutter_practice_day_5/feedback.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -29,10 +33,49 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  final myController = TextEditingController();
+Future<bool> createFeedback(String fullName, String phone, String email) async {
+  final response =
+      await http.post(Uri.parse('http://192.168.1.24:8000/feedback/'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'full_name': fullName,
+            'phone': phone,
+            'email': email,
+          }));
 
-  void _sendData() {}
+  if (response.statusCode == 201) {
+    return true;
+  } else {
+    throw Exception('Failed to create feedback');
+  }
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final emailController = TextEditingController();
+
+  Future<void> _dialogStatus(BuildContext context){
+    return showDialog(
+      context: context, 
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Title'),
+          content: Text('Content'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context)
+              ),
+              onPressed: onPressed, 
+              child: Text('OK')),
+          ],
+        )
+       }
+      )
+  }
 
   var _number = ' ';
   void _numberSample(String countryCode) {
@@ -41,9 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
       RegExp regExp = new RegExp(pattern);
 
       String smth =
-          myController.text.trim().replaceAll(' ', '').replaceAll('-', '');
+          phoneController.text.trim().replaceAll(' ', '').replaceAll('-', '');
 
-      if (myController.text.isEmpty) {
+      if (phoneController.text.isEmpty) {
         _number = 'Phone number is valid!';
       } else if (regExp.hasMatch(smth) && smth.length >= 10) {
         var num = smth.substring(smth.length - 10);
@@ -69,123 +112,58 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Colors.blue,
           title: Text(widget.title),
         ),
-        body: Column(
-          children: <Widget>[
-            Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 8,
-                ),
-                child: TextFormField(
-                  controller: myController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter your full name:',
-                  ),
+        body: Center(
+          child: Column(children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ),
+              child: TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter your full name:',
                 ),
               ),
             ),
-            Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 8,
-                ),
-                child: TextFormField(
-                  controller: myController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter your number:',
-                  ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ),
+              child: TextFormField(
+                controller: phoneController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter your number:',
                 ),
               ),
             ),
-            Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 8,
-                ),
-                child: TextFormField(
-                  controller: myController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter your email:',
-                  ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ),
+              child: TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter your email:',
                 ),
               ),
             ),
-            SizedBox(
-              height: 50,
-              width: 300,
-              child: TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 10, 115, 201)),
-                ),
-                onPressed: () {
-                  _numberSample('+7');
+            ElevatedButton(
+                onPressed: () async {
+                  String fullName = nameController.text;
+                  String phone = phoneController.text;
+                  String email = emailController.text;
+                  var result = await FeedbackPost(
+                      fullName: fullName, phone: phone, email: email);
+                  if (result == true) {}
                 },
-                child: Text(
-                  'To Sample',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 45,
-                horizontal: 10,
-              ),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: IconButton(
-                        icon: Flag.fromCode(
-                          FlagsCode.KZ,
-                        ),
-                        iconSize: 5,
-                        onPressed: () {
-                          _numberSample('+7');
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: IconButton(
-                        icon: Flag.fromCode(
-                          FlagsCode.US,
-                        ),
-                        iconSize: 5,
-                        onPressed: () {
-                          _numberSample('+1');
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: IconButton(
-                        icon: Flag.fromCode(
-                          FlagsCode.UA,
-                        ),
-                        iconSize: 5,
-                        onPressed: () {
-                          _numberSample('+380');
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+                child: Text('Send')),
+          ]),
         ));
   }
 }
